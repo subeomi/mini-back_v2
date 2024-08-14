@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.gbsb.duncool.mappers.ItemMapper">
+
+<!--    item_info-->
+    <insert id="insertItemInfo">
+        INSERT INTO item_info (
+        item_id, item_name, item_type, item_type_detail, item_available_level, item_rarity, item_fame
+        ) VALUES (
+        #{itemId}, #{itemName}, #{itemType}, #{itemTypeDetail}, #{itemAvailableLevel}, #{itemRarity}, #{itemFame}
+        )
+        ON DUPLICATE KEY UPDATE
+        item_name = VALUES(item_name),
+        item_type = VALUES(item_type),
+        item_type_detail = VALUES(item_type_detail),
+        item_available_level = VALUES(item_available_level),
+        item_rarity = VALUES(item_rarity),
+        item_fame = values(item_fame)
+    </insert>
+
+    <resultMap id="ItemInfoDTOMap" type="ItemInfoDTO">
+        <id column="item_id" property="itemId"/>
+        <result column="item_name" property="itemName"/>
+        <result column="item_type" property="itemType"/>
+        <result column="item_type_detail" property="itemTypeDetail"/>
+        <result column="item_rarity" property="itemRarity"/>
+        <result column="item_available_level" property="itemAvailableLevel"/>
+        <result column="item_fame" property="itemFame"/>
+    </resultMap>
+
+    <select id="getOneItem" parameterType="String" resultMap="ItemInfoDTOMap">
+        SELECT * FROM item_info WHERE item_id = #{itemId}
+    </select>
+
+<!--    price_info-->
+    <insert id="insertPriceInfo">
+        INSERT INTO price_info (
+        item_id, item_price, price_history
+        ) VALUES (
+        #{itemId}, #{itemPrice}, #{priceHistory}
+        )
+    </insert>
+
+    <resultMap id="PriceInfoDTOMap" type="PriceInfoDTO">
+        <id column="item_id" property="itemId"/>
+        <result column="item_price" property="itemPrice"/>
+        <result column="price_history" property="priceHistory"/>
+        <result column="fame_rank" property="fameRank"/>
+    </resultMap>
+
+    <select id="getOnePrice" parameterType="String" resultMap="PriceInfoDTOMap">
+        SELECT
+        pr.*,
+        ii.item_name,
+        (
+        SELECT COUNT(DISTINCT ii_sub.item_fame)
+        FROM item_info ii_sub
+        WHERE ii_sub.item_fame >= ii.item_fame
+        AND ii_sub.item_type = ii.item_type
+        AND ii_sub.item_type_detail = ii.item_type_detail
+        AND (
+        (ii.item_type_detail = '엠블렘' AND ii_sub.item_name NOT LIKE '%플래티넘%') OR
+        (ii.item_type_detail = '전문직업 재료' AND ii_sub.item_id IN (
+        SELECT es_sub.item_id
+        FROM enchant_slot es_sub
+        WHERE es_sub.slot = es.slot
+        )) OR
+        (ii.item_type_detail NOT IN ('엠블렘', '전문직업 재료'))
+        )
+        ) AS fame_rank
+        FROM
+        item_info ii
+        LEFT OUTER JOIN
+        price_info pr ON ii.item_id = pr.item_id
+        LEFT OUTER JOIN
+        enchant_slot es ON ii.item_id = es.item_id
+        WHERE
+        ii.item_id = #{itemId}
+        ORDER BY
+        pr.pdate DESC
+        LIMIT 1;
+    </select>
+
+<!--    item_reinforce_skill-->
+    <resultMap id="ItemReinforceDTOMap" type="ItemReinforceDTO">
+        <id column="item_id" property="itemId"/>
+        <result column="reinforce_skill" property="reinforceSkill"/>
+    </resultMap>
+
+
+    <insert id="insertReinforceSkill">
+        insert into item_reinforce_skill(
+        item_id, reinforce_skill
+        ) values (
+        #{itemId}, #{reinforceSkill}
+        )
+        on duplicate key update
+        reinforce_skill = values(reinforce_skill)
+    </insert>
+
+    <select id="getReinforceSkill" parameterType="String" resultMap="ItemReinforceDTOMap">
+        select * from item_reinforce_skill
+        where item_id = #{itemId}
+    </select>
+
+</mapper>

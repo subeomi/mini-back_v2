@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.gbsb.duncool.mappers.EnchantMapper">
+
+    <insert id="insertEnchantInfo">
+        INSERT INTO item_enchant_info (
+        item_id, enchant, upgrade
+        ) VALUES (
+        #{itemId}, #{enchant}, ${upgrade}
+        )
+    </insert>
+
+    <insert id="insertEnchantSlot">
+        INSERT INTO enchant_slot (
+        item_id, slot
+        ) VALUES (
+        #{itemId}, #{slot}
+        )
+        ON DUPLICATE KEY UPDATE
+        slot = VALUES(slot)
+    </insert>
+
+    <resultMap id="EnchantDTOMap" type="EnchantDTO">
+        <id column="item_id" property="itemId"/>
+        <result column="item_name" property="itemName"/>
+        <result column="enchant" property="enchant"/>
+        <result column="upgrade" property="upgrade"/>
+        <result column="slot" property="slot"/>
+    </resultMap>
+
+    <select id="getOneEnchant" resultMap="EnchantDTOMap">
+        SELECT DISTINCT i.item_id, i.item_name, e.enchant, e.upgrade, s.slot
+        FROM item_info i
+        join item_enchant_info e ON i.item_id = e.item_id
+        join enchant_slot s ON s.item_id = e.item_id
+        WHERE e.enchant = CAST(#{enchant} AS JSON)
+        and s.slot = #{slot}
+        LIMIT 1
+    </select>
+
+</mapper>

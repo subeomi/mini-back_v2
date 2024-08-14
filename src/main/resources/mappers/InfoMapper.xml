@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.gbsb.duncool.mappers.InfoMapper">
+
+    <select id="getCharList">
+        SELECT
+        characterId, guildId, guildName,
+        adventureName, totalPrice, hidden,
+        serverId, fame
+        FROM char_info
+        WHERE
+            <choose>
+                <when test="characterName.length() == 1">
+                    characterName = #{characterName}
+                </when>
+                <otherwise>
+                    characterName LIKE CONCAT('%', #{characterName}, '%')
+                </otherwise>
+            </choose>
+    </select>
+
+    <select id="getCharListByAdventure">
+        select
+        ci.characterId,
+        ci.characterName,
+        ci.serverId,
+        trim(both '"' from json_extract(cd.data, '$.jobGrowName')) as jobGrowName,
+        ci.adventureName,
+        ci.guildName,
+        ci.fame
+        from char_info ci
+        join char_data cd on cd.characterId = ci.characterId
+        where ci.adventureName = #{adventureName}
+    </select>
+
+    <insert id="insertInfo">
+        INSERT INTO char_info
+        (characterId, characterName, serverId, guildId, guildName, adventureName, fame, jobId, jobName, jobGrowId, jobGrowName)
+        VALUES
+        (#{characterId}, #{characterName}, #{serverId}, #{guildId}, #{guildName}, #{adventureName}, #{fame},
+        #{jobId}, #{jobName}, #{jobGrowId}, #{jobGrowName})
+        ON DUPLICATE KEY UPDATE
+        characterName = VALUES(characterName),
+        guildId = VALUES(guildId),
+        guildName = VALUES(guildName),
+        adventureName = VALUES(adventureName),
+        fame = VALUES(fame),
+        jobId = VALUES(jobId),
+        jobName = VALUES(jobName),
+        jobGrowId = VALUES(jobGrowId),
+        jobGrowName = VALUES(jobGrowName)
+    </insert>
+
+    <insert id="insertCharInfo">
+        INSERT INTO char_info (
+        characterId, characterName, serverId, guildId, guildName, adventureName, fame, udate, jobId, jobName, jobGrowId, jobGrowName
+        ) VALUES (
+        #{characterId}, #{characterName}, #{serverId}, #{guildId}, #{guildName}, #{adventureName}, #{fame}, #{udate},
+        #{jobId}, #{jobName}, #{jobGrowId}, #{jobGrowName}
+        )
+        ON DUPLICATE KEY UPDATE
+        characterName = VALUES(characterName),
+        serverId = VALUES(serverId),
+        guildId = VALUES(guildId),
+        guildName = VALUES(guildName),
+        adventureName = VALUES(adventureName),
+        fame = VALUES(fame),
+        udate = VALUES(udate),
+        jobId = VALUES(jobId),
+        jobName = VALUES(jobName),
+        jobGrowId = VALUES(jobGrowId),
+        jobGrowName = VALUES(jobGrowName)
+    </insert>
+
+    <update id="updateCharInfo">
+        UPDATE char_info
+        SET characterName = #{characterName},
+        serverId = #{serverId},
+        guildId = #{guildId},
+        guildName = #{guildName},
+        adventureName = #{adventureName},
+        fame = #{fame},
+        udate = CURRENT_TIMESTAMP,
+        jobId = #{jobId},
+        jobName = #{jobName},
+        jobGrowId = #{jobGrowId},
+        jobGrowName = #{jobGrowName}
+        WHERE characterId = #{characterId}
+    </update>
+
+    <select id="getCharAll">
+        SELECT
+        i.characterId,
+        i.characterName,
+        i.serverId,
+        i.guildId,
+        i.guildName,
+        i.adventureName,
+        i.jobId,
+        i.jobName,
+        i.jobGrowId,
+        i.jobGrowName,
+        d.data AS data,
+        e.equip AS equip,
+        av.avatar AS avatar,
+        cr.creature AS creature,
+        sw.switching AS switching,
+        i.udate
+        FROM char_info i
+        join char_data d ON i.characterId = d.characterId
+        join char_equip e ON i.characterId = e.characterId
+        join char_avatar av ON i.characterId = av.characterId
+        join char_creature cr ON i.characterId = cr.characterId
+        join char_switching sw ON i.characterId = sw.characterId
+        WHERE i.characterId = (#{characterId})
+    </select>
+
+</mapper>
