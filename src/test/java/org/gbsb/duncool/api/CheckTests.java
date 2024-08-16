@@ -10,6 +10,7 @@ import org.gbsb.duncool.mappers.InfoMapper;
 import org.gbsb.duncool.util.SingletonManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -26,8 +27,10 @@ public class CheckTests {
     private final String 빨간바람 = "6c0ee675cc624ae0b9d10bb8940f2a8c";
     
     private final String 깨시민 = "ba24a0025ad3fb1c72d26f2a079f7cc0";
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String API_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
     private String 카시야스 = "casillas";
 
     @Autowired

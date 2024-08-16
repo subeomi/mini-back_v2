@@ -161,6 +161,8 @@ public class DuncoolServiceImpl implements DuncoolService {
             log.info("data" + data, equipment);
         }
 
+        data = getAltFromData(data);
+
         result.set("equipment", equipment);
         result.set("data", data);
         result.set("avatar", avatar);
@@ -258,6 +260,8 @@ public class DuncoolServiceImpl implements DuncoolService {
             mapper.updateCreature(setDto);
             mapper.updateSwitching(setDto);
         }
+
+        data = getAltFromData(data);
 
         result.set("equipment", equipment);
         result.set("data", data);
@@ -394,5 +398,16 @@ public class DuncoolServiceImpl implements DuncoolService {
         return creature;
     }
 
+//    data에 부캐 목록 삽입
+    private ObjectNode getAltFromData(ObjectNode data){
+
+        String adventureName = data.path("adventureName").asText();
+
+        JsonNode altList = getCharListByAdventure(adventureName);
+
+        data.set("alt", altList);
+
+        return data;
+    }
 
 }

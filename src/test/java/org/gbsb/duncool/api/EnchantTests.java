@@ -12,6 +12,7 @@ import org.gbsb.duncool.service.EnchantService;
 import org.gbsb.duncool.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +25,10 @@ import java.util.List;
 @Log4j2
 public class EnchantTests {
 
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String API_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
 
     private String 카시야스 = "casillas";
     private String 바칼 = "bakal";

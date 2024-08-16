@@ -32,13 +32,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemInfoDTO getOneItem(String itemId) {
 
-        if (itemId == null || itemId.equals("null")) return null;
+        if (itemId == null || itemId.equals("null") || itemId.isEmpty()) return null;
 //        log.info("get one item id: " + itemId);
 
         ItemInfoDTO dto = itemMapper.getOneItem(itemId);
         if (dto == null || dto.getItemRarity().isEmpty() || dto.getItemFame() == 0) {
             String uri = apiUrl + "items/" + itemId + "?apikey=" + apiKey;
-
             ResponseEntity<ObjectNode> res = restTemplate.getForEntity(
                     uri,
                     ObjectNode.class);

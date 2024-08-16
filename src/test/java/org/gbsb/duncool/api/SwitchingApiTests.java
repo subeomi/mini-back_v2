@@ -10,6 +10,7 @@ import org.gbsb.duncool.service.AuctionService;
 import org.gbsb.duncool.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -19,8 +20,10 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 public class SwitchingApiTests {
 
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String DNF_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
 
     private String 카시야스 = "casillas";
     private String 깨시민 = "67d387926ea1a53b57f64ee0a24893b2";
@@ -91,7 +94,7 @@ public class SwitchingApiTests {
 
     @Test
     private JsonNode switchingEquipTest1() {
-        String uri = DNF_URL + "servers/" + 카시야스 + "/characters/" +
+        String uri = API_URL + "servers/" + 카시야스 + "/characters/" +
                 깨시민 + "/skill/buff/equip/equipment?apikey=" + API_KEY;
 
         ResponseEntity<ObjectNode> res = restTemplate.getForEntity(
@@ -106,7 +109,7 @@ public class SwitchingApiTests {
 
     @Test
     private JsonNode switchingAvatarTest1() {
-        String uri = DNF_URL + "servers/" + 카시야스 + "/characters/" +
+        String uri = API_URL + "servers/" + 카시야스 + "/characters/" +
                 깨시민 + "/skill/buff/equip/avatar?apikey=" + API_KEY;
 
         ResponseEntity<ObjectNode> res = restTemplate.getForEntity(
@@ -121,7 +124,7 @@ public class SwitchingApiTests {
 
     @Test
     private JsonNode switchingCreatureTest1() {
-        String uri = DNF_URL + "servers/" + 카시야스 + "/characters/" +
+        String uri = API_URL + "servers/" + 카시야스 + "/characters/" +
                 깨시민 + "/skill/buff/equip/creature?apikey=" + API_KEY;
 
         ResponseEntity<ObjectNode> res = restTemplate.getForEntity(

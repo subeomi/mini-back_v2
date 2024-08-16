@@ -15,6 +15,7 @@ import org.gbsb.duncool.service.EnchantService;
 import org.gbsb.duncool.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +25,10 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 public class ItemTests {
 
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String API_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
 
     private final int limit = 20;
 
@@ -59,7 +62,7 @@ public class ItemTests {
     @Test
     public void itemTest2() {
 
-        String itemId = "053192083c0cebcbbe414388b51088b5";
+        String itemId = "7bcaa8145ee48f67e608b15a0783463a";
 
         String uri = API_URL + "items/" + itemId + "?apikey=" + API_KEY;
 
@@ -72,6 +75,15 @@ public class ItemTests {
         JsonNode node = result.path("rows");
 
         log.info(result);
+    }
+
+    @Test
+    public void itemInfoUpdateTest(){
+        String itemId = "b3e96b203500e4db06da8a3b8630efdd";
+
+        ItemInfoDTO dto = itemService.getOneItem(itemId);
+
+        log.info(dto);
     }
 
     @Test

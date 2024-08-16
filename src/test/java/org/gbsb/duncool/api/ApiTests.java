@@ -11,6 +11,7 @@ import org.gbsb.duncool.mappers.InfoMapper;
 import org.gbsb.duncool.service.DuncoolService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
@@ -32,8 +33,10 @@ import java.util.*;
 @Log4j2
 public class ApiTests {
 
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String API_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
 
     @Autowired
     private InfoMapper mapper;
@@ -42,13 +45,16 @@ public class ApiTests {
     @Autowired
     private RestTemplate restTemplate;
 
+    String 시로코 = "siroco";
+    String 테스트아이디 = "6a44181547e8325fba635a0988b9da5f";
+
 
     // private final CharSearchDTO dto;
 
     @Test
     public void apiTest1() {
-        String uri = API_URL + "servers/" + "cain" + "/characters/" +
-                "b180c92a11436899d289de2c1ee6149d" + "/status?apikey=" + API_KEY;
+        String uri = API_URL + "servers/" + 시로코 + "/characters/" +
+                테스트아이디 + "/status?apikey=" + API_KEY;
 
         ResponseEntity<ObjectNode> res = restTemplate.getForEntity(
                 uri,

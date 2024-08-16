@@ -297,7 +297,7 @@ public class AuctionServiceImpl implements AuctionService {
                 sumPrice += Integer.parseInt(crAuc.getItemPrice());
             }
 //          가격 정보가 없어라도 명성 순위는 가져와야 한다
-            if(crAuc.getFameRank() >= 0){
+            if(crAuc != null && crAuc.getFameRank() >= 0){
                 ((ObjectNode) creatureInfo).put("rank", crAuc.getFameRank());
             }
         }
@@ -424,6 +424,7 @@ public class AuctionServiceImpl implements AuctionService {
 //        log.info("auc search itemId: " + itemId);
         ItemInfoDTO itemDTO = itemService.getOneItem(itemId);
 //        log.info(itemDTO);
+        if(itemDTO == null) return null;
 
         String auctionSoldUri = apiUrl + "auction-sold?itemId=" +
                 itemId + "&limit=" + limit + "&apikey=" + apiKey;

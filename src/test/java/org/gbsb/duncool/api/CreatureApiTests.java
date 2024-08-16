@@ -8,6 +8,7 @@ import org.gbsb.duncool.dto.PriceInfoDTO;
 import org.gbsb.duncool.service.AuctionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -17,8 +18,10 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 public class CreatureApiTests {
 
-    private final String API_KEY = "5KbFU6jtQwi5dwY7TXUHaSutPZlTM9pQ";
-    private final String API_URL = "https://api.neople.co.kr/df/";
+    @Value("${dnf.api.key}")
+    private String API_KEY;
+    @Value("${dnf.api.url}")
+    private String API_URL;
 
     private String 카시야스 = "casillas";
     private String 깨시민 = "ba24a0025ad3fb1c72d26f2a079f7cc0";
