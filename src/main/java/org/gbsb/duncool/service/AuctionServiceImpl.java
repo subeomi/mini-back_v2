@@ -47,13 +47,12 @@ public class AuctionServiceImpl implements AuctionService {
     private final ObjectMapper om = SingletonManager.getObjectMapper();
 
     @Override
-    public ObjectNode getEquipPrice(ObjectNode equip) {
+    public JsonNode getEquipPrice(JsonNode equip) {
 
         int sumPrice = 0;
         int sumEnchantPrice = 0;
-        JsonNode equips = equip.path("equipment");
 
-        for (JsonNode eq : equips) {
+        for (JsonNode eq : equip) {
             // 장비 가격
             String slotName = eq.path("slotName").asText();
             JsonNode enchantNode = eq.path("enchant");
@@ -120,16 +119,12 @@ public class AuctionServiceImpl implements AuctionService {
             }
         }
 
-        equip.put("sumEnchantPrice", sumEnchantPrice);
-        equip.put("sumPrice", sumPrice);
-
         return equip;
     }
 
     @Override
     public ObjectNode getSwitchingPrice(ObjectNode switching, String jobId) {
 
-        int sumPrice = 0;
         JsonNode equip = switching.path("equip");
         JsonNode avatar = switching.path("avatar");
         JsonNode creature = switching.path("creature");
@@ -151,7 +146,6 @@ public class AuctionServiceImpl implements AuctionService {
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
-                sumPrice += Integer.parseInt(eqAuc.getItemPrice());
             }
         }
         for (JsonNode av : avatar) {
@@ -180,7 +174,6 @@ public class AuctionServiceImpl implements AuctionService {
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    sumPrice += Integer.parseInt(emblemAuc.getItemPrice());
                 }
             }
 
@@ -193,7 +186,6 @@ public class AuctionServiceImpl implements AuctionService {
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
-                sumPrice += Integer.parseInt(avAuc.getItemPrice());
             }
         }
         if (creature != null) {
@@ -205,18 +197,13 @@ public class AuctionServiceImpl implements AuctionService {
             }
         }
 
-        switching.put("sumPrice", sumPrice);
-
         return switching;
     }
 
     @Override
-    public ObjectNode getAvatarPrice(ObjectNode avatar) {
+    public JsonNode getAvatarPrice(JsonNode avatar) {
 
-        int sumPrice = 0;
-        JsonNode avs = avatar.path("avatar");
-
-        for (JsonNode av : avs) {
+        for (JsonNode av : avatar) {
             String itemId = av.path("itemId").asText();
             JsonNode clone = av.path("clone");
             JsonNode emblems = av.path("emblems");
@@ -224,7 +211,8 @@ public class AuctionServiceImpl implements AuctionService {
 
             // 메인아바타
             PriceInfoDTO avAuc = getAucItemId(itemId);
-            if (slotName.contains("오라")) {
+            if (slotName.equals("오라 아바타")) {
+//            log.info(avAuc);
                 if (avAuc != null && avAuc.getFameRank() != 0) {
                     ((ObjectNode) av).put("rank", avAuc.getFameRank());
                 }
@@ -236,7 +224,6 @@ public class AuctionServiceImpl implements AuctionService {
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
-                sumPrice += Integer.parseInt(avAuc.getItemPrice());
             }
             // 클론아바타
             if (clone.path("itemId").asText() != null) {
@@ -248,7 +235,6 @@ public class AuctionServiceImpl implements AuctionService {
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    sumPrice += Integer.parseInt(cloneAuc.getItemPrice());
                 }
             }
             // 엠블렘
@@ -264,25 +250,20 @@ public class AuctionServiceImpl implements AuctionService {
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
-                        sumPrice += Integer.parseInt(emblemAuc.getItemPrice());
                     }
                 }
             }
         }
 
-        avatar.put("sumPrice", sumPrice);
-
         return avatar;
     }
 
     @Override
-    public ObjectNode getCreaturePrice(ObjectNode creature) {
+    public JsonNode getCreaturePrice(JsonNode creature) {
 
-        int sumPrice = 0;
-        JsonNode creatureInfo = creature.path("creature");
-        JsonNode art = creature.path("creature").path("artifact");
-        String creatureName = creatureInfo.path("itemName").asText();
-        String chkId = creatureInfo.path("itemId").asText();
+        JsonNode art = creature.path("artifact");
+        String creatureName = creature.path("itemName").asText();
+        String chkId = creature.path("itemId").asText();
         String aucItemId = null;
 
         if (creatureName != null) {
@@ -292,17 +273,16 @@ public class AuctionServiceImpl implements AuctionService {
             PriceInfoDTO crAuc = getAucItemId(creatureId);
 
             if (crAuc != null && crAuc.getItemPrice() != null) {
-                ((ObjectNode) creatureInfo).put("price", crAuc.getItemPrice());
+                ((ObjectNode) creature).put("price", crAuc.getItemPrice());
                 try {
-                    ((ObjectNode) creatureInfo).set("history", om.readTree(crAuc.getPriceHistory()));
+                    ((ObjectNode) creature).set("history", om.readTree(crAuc.getPriceHistory()));
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
-                sumPrice += Integer.parseInt(crAuc.getItemPrice());
             }
 //          가격 정보가 없어라도 명성 순위는 가져와야 한다
             if (crAuc != null && crAuc.getFameRank() >= 0) {
-                ((ObjectNode) creatureInfo).put("rank", crAuc.getFameRank());
+                ((ObjectNode) creature).put("rank", crAuc.getFameRank());
             }
         }
 
@@ -318,11 +298,9 @@ public class AuctionServiceImpl implements AuctionService {
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
-                sumPrice += Integer.parseInt(arAuc.getItemPrice());
             }
         }
 
-        creature.put("sumPrice", sumPrice);
 
         return creature;
     }
@@ -331,6 +309,7 @@ public class AuctionServiceImpl implements AuctionService {
     public PriceInfoDTO getAucItemId(String itemId) {
         PriceInfoDTO dto = itemMapper.getOnePrice(itemId);
 //        log.info("get one price itemId: " + itemId);
+//        log.info(dto);
 
         String pdate = null;
         Long dateDiff = null;
@@ -354,13 +333,19 @@ public class AuctionServiceImpl implements AuctionService {
 
         if (dto == null || (dateDiff != null && dateDiff >= 0) || (dto != null && dto.getItemId() == null) || dto.getFameRank() == 0) {
             JsonNode price = createPrice(itemId);
-            if (price == null) return null;
+//            log.info(price);
 
-//            log.info("dto: " + dto);
-            dto = om.convertValue(price, PriceInfoDTO.class);
-//            log.info("convert dto: " + dto);
+            if(price != null){
+                dto = dto.builder()
+                        .priceHistory(price.path("priceHistory").asText())
+                        .itemPrice(price.path("itemPrice").asText())
+                        .itemId(price.path("itemId").asText())
+                        .itemName(price.path("itemName").asText()).build();
+                itemMapper.insertPriceInfo(dto);
+            }
 
-            itemMapper.insertPriceInfo(dto);
+//            log.info("insert price dto: " + dto);
+
             if (fameRank > 0) {
                 dto.setFameRank(fameRank);
             } else {
@@ -408,12 +393,17 @@ public class AuctionServiceImpl implements AuctionService {
 //            log.info(itemId);
             JsonNode price = createPrice(itemId);
 //            log.info("enchant price" + price);
-            if (price == null) return null;
 
-            dto = om.convertValue(price, PriceInfoDTO.class);
+            if(price != null){
+                dto = dto.builder()
+                        .priceHistory(price.path("priceHistory").asText())
+                        .itemPrice(price.path("itemPrice").asText())
+                        .itemId(price.path("itemId").asText())
+                        .itemName(price.path("itemName").asText()).build();
+                itemMapper.insertPriceInfo(dto);
+            }
 
 //            log.info("insert price dto: " + dto);
-            itemMapper.insertPriceInfo(dto);
             if (fameRank > 0) {
                 dto.setFameRank(fameRank);
             } else {

@@ -15,13 +15,13 @@ public interface DuncoolService {
 
     ObjectNode getOneInfo(String serverId, String characterId);
 
-    ObjectNode getEquipment(String serverId, String characterId);
+    JsonNode getEquipment(String serverId, String characterId);
 
     ObjectNode getCharInfo(String serverId, String characterId);
 
-    ObjectNode getAvatar(String serverId, String characterId);
+    JsonNode getAvatar(String serverId, String characterId);
 
-    ObjectNode getCreature(String serverId, String characterId);
+    JsonNode getCreature(String serverId, String characterId);
 
     ObjectNode getSwitching(String serverId, String characterId, String jobId);
 }

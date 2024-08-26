@@ -7,13 +7,13 @@ import org.gbsb.duncool.dto.PriceInfoDTO;
 
 public interface AuctionService {
 
-    ObjectNode getEquipPrice(ObjectNode equip);
+    JsonNode getEquipPrice(JsonNode equip);
 
     ObjectNode getSwitchingPrice(ObjectNode switching, String jobId);
 
-    ObjectNode getAvatarPrice(ObjectNode avatar);
+    JsonNode getAvatarPrice(JsonNode avatar);
 
-    ObjectNode getCreaturePrice(ObjectNode creature);
+    JsonNode getCreaturePrice(JsonNode creature);
 
     PriceInfoDTO getAucItemId(String itemId);
 

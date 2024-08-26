@@ -35,8 +35,6 @@ public class DuncoolServiceImpl implements DuncoolService {
     private String apiKey;
     @Value("${dnf.api.url}")
     private String apiUrl;
-
-    private final EquipService equipService;
     private final AuctionService auctionService;
 
     private final InfoMapper mapper;
@@ -75,15 +73,15 @@ public class DuncoolServiceImpl implements DuncoolService {
         List<CharInfoDTO> dbArr = mapper.getCharList(characterName);
         JsonNode arr = result.path("rows");
 
-        for(JsonNode json : arr){
+        for (JsonNode json : arr) {
             String characterId = json.path("characterId").asText();
-            for(CharInfoDTO dto : dbArr){
-                if(dto.getCharacterId().equals(characterId)){
-                    ((ObjectNode) json).put("guildId",dto.getGuildId());
-                    ((ObjectNode) json).put("guildName",dto.getGuildName());
-                    ((ObjectNode) json).put("adventureName",dto.getAdventureName());
-                    ((ObjectNode) json).put("totalPrice",dto.getTotalPrice());
-                    ((ObjectNode) json).put("hidden",dto.getHidden());
+            for (CharInfoDTO dto : dbArr) {
+                if (dto.getCharacterId().equals(characterId)) {
+                    ((ObjectNode) json).put("guildId", dto.getGuildId());
+                    ((ObjectNode) json).put("guildName", dto.getGuildName());
+                    ((ObjectNode) json).put("adventureName", dto.getAdventureName());
+                    ((ObjectNode) json).put("totalPrice", dto.getTotalPrice());
+                    ((ObjectNode) json).put("hidden", dto.getHidden());
                 }
             }
         }
@@ -102,7 +100,7 @@ public class DuncoolServiceImpl implements DuncoolService {
 
         ArrayNode arr = om.createArrayNode();
 
-        for(CharInfoAdvenDTO dto : lst) {
+        for (CharInfoAdvenDTO dto : lst) {
             JsonNode node = om.valueToTree(dto);
             arr.add(node);
         }
@@ -121,9 +119,9 @@ public class DuncoolServiceImpl implements DuncoolService {
         ObjectNode result = om.createObjectNode();
 
         ObjectNode data = null;
-        ObjectNode equipment = null;
-        ObjectNode avatar = null;
-        ObjectNode creature = null;
+        JsonNode equipment = null;
+        JsonNode avatar = null;
+        JsonNode creature = null;
         ObjectNode switching = null;
 
         String udate = null;
@@ -150,9 +148,9 @@ public class DuncoolServiceImpl implements DuncoolService {
 //            log.info("dto.getCreature(): {}", dto.getCreature());
             try {
                 data = (ObjectNode) om.readTree(dto.getData());
-                equipment = (ObjectNode) om.readTree(dto.getEquip());
-                avatar = (ObjectNode) om.readTree(dto.getAvatar());
-                creature = (ObjectNode) om.readTree(dto.getCreature());
+                equipment = om.readTree(dto.getEquip());
+                avatar = om.readTree(dto.getAvatar());
+                creature = om.readTree(dto.getCreature());
                 switching = (ObjectNode) om.readTree(dto.getSwitching());
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -177,9 +175,9 @@ public class DuncoolServiceImpl implements DuncoolService {
         ObjectNode result = om.createObjectNode();
 
         ObjectNode data = getCharInfo(serverId, characterId);
-        ObjectNode equipment = getEquipment(serverId, characterId);
-        ObjectNode avatar = getAvatar(serverId, characterId);
-        ObjectNode creature = getCreature(serverId, characterId);
+        JsonNode equipment = getEquipment(serverId, characterId);
+        JsonNode avatar = getAvatar(serverId, characterId);
+        JsonNode creature = getCreature(serverId, characterId);
 
         String jobId = data.path("jobId").asText();
         String jobGrowId = data.path("jobGrowId").asText();
@@ -278,7 +276,7 @@ public class DuncoolServiceImpl implements DuncoolService {
     }
 
     @Override
-    public ObjectNode getEquipment(String serverId, String characterId) {
+    public JsonNode getEquipment(String serverId, String characterId) {
 
         String uri = apiUrl + "servers/" + serverId + "/characters/" +
                 characterId + "/equip/equipment?&apikey=" + apiKey;
@@ -287,7 +285,7 @@ public class DuncoolServiceImpl implements DuncoolService {
                 uri,
                 ObjectNode.class);
 
-        ObjectNode result = res.getBody();
+        JsonNode result = res.getBody().path("equipment");
 
         result = auctionService.getEquipPrice(result);
 
@@ -310,7 +308,7 @@ public class DuncoolServiceImpl implements DuncoolService {
     }
 
     @Override
-    public ObjectNode getAvatar(String serverId, String characterId) {
+    public JsonNode getAvatar(String serverId, String characterId) {
 
         String uri = apiUrl + "servers/" + serverId + "/characters/" +
                 characterId + "/equip/avatar?apikey=" + apiKey;
@@ -319,14 +317,15 @@ public class DuncoolServiceImpl implements DuncoolService {
                 uri,
                 ObjectNode.class);
 
-        ObjectNode result = res.getBody();
+        JsonNode result = res.getBody().path("avatar");
 
         result = auctionService.getAvatarPrice(result);
+
         return result;
     }
 
     @Override
-    public ObjectNode getCreature(String serverId, String characterId) {
+    public JsonNode getCreature(String serverId, String characterId) {
         String uri = apiUrl + "servers/" + serverId + "/characters/" +
                 characterId + "/equip/creature?apikey=" + apiKey;
 
@@ -334,7 +333,7 @@ public class DuncoolServiceImpl implements DuncoolService {
                 uri,
                 ObjectNode.class);
 
-        ObjectNode result = res.getBody();
+        JsonNode result = res.getBody().path("creature");
 
         result = auctionService.getCreaturePrice(result);
         return result;
@@ -398,8 +397,8 @@ public class DuncoolServiceImpl implements DuncoolService {
         return creature;
     }
 
-//    data에 부캐 목록 삽입
-    private ObjectNode getAltFromData(ObjectNode data){
+    //    data에 부캐 목록 삽입
+    private ObjectNode getAltFromData(ObjectNode data) {
 
         String adventureName = data.path("adventureName").asText();
 

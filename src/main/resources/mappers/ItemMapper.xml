@@ -47,6 +47,7 @@
     <resultMap id="PriceInfoDTOMap" type="PriceInfoDTO">
         <id column="item_id" property="itemId"/>
         <result column="item_price" property="itemPrice"/>
+        <result column="item_name" property="itemName"/>
         <result column="price_history" property="priceHistory"/>
         <result column="fame_rank" property="fameRank"/>
     </resultMap>

@@ -230,8 +230,8 @@ public class ApiTests {
         String characterId = firstNode.path("characterId").asText();
 
         ObjectNode data = duncoolService.getCharInfo(serverId, characterId);
-        ObjectNode equipment = duncoolService.getEquipment(serverId, characterId);
-        ObjectNode avatar = duncoolService.getAvatar(serverId, characterId);
+        JsonNode equipment = duncoolService.getEquipment(serverId, characterId);
+        JsonNode avatar = duncoolService.getAvatar(serverId, characterId);
 
         log.info(data);
 

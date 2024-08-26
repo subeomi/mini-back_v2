@@ -189,6 +189,13 @@ public class EnchantServiceImpl implements EnchantService{
             JsonNode slots = idResult.path("cardInfo").path("slots");
             JsonNode enchant = idResult.path("cardInfo").path("enchant");
 
+//            명성 156 초과시 컷
+            int fameValue = idResult.has("fame") ? idResult.path("fame").asInt() : 0;
+
+            if(fameValue > 156){
+                continue;
+            }
+
 //        log.info("idResult: "+idResult);
             log.info(itemService.getOneItem(itemId));
             log.info(slots.size());

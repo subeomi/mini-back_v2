@@ -14,10 +14,11 @@ import java.util.Arrays;
 @Aspect
 @Component
 @Log4j2
-public class ControllerReqLogging {
+public class ControllerLogging {
 
+//    Before는 메소드 호출 전 동작
     @Before("execution(* org.gbsb.duncool.controller.DunCoolController.*(..))")
-    public void logReqInfo(JoinPoint jp) {
+    public void controllerReqInfo(JoinPoint jp) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
