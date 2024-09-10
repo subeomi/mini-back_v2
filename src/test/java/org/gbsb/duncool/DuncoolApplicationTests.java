@@ -1,5 +1,6 @@
 package org.gbsb.duncool;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.log4j.Log4j2;
 import org.gbsb.duncool.service.DuncoolService;
@@ -23,7 +24,7 @@ class DuncoolApplicationTests {
 
 	@Test
 	public void test1() {
-		ObjectNode test1 = duncoolService.getEquipment(MY_SERVER,MY_CHAR);
+		JsonNode test1 = duncoolService.getEquipment(MY_SERVER,MY_CHAR);
 		log.info(test1);
 	}
 

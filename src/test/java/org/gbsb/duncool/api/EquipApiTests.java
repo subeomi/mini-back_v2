@@ -94,7 +94,7 @@ public class EquipApiTests {
                 uri,
                 ObjectNode.class);
 
-        ObjectNode result = res.getBody();
+        JsonNode result = res.getBody();
 
         result = auctionService.getEquipPrice(result);
 

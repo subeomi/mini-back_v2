@@ -40,8 +40,6 @@ public class AuctionServiceImpl implements AuctionService {
     private final ItemService itemService;
     private final EnchantService enchantService;
     private final ItemMapper itemMapper;
-
-    private final EnchantMapper enchantMapper;
     private final RestTemplate restTemplate;
 
     private final ObjectMapper om = SingletonManager.getObjectMapper();
@@ -152,7 +150,10 @@ public class AuctionServiceImpl implements AuctionService {
             String itemId = av.path("itemId").asText();
             JsonNode arrNode = av.path("emblems");
 
-            if (arrNode.isArray()) {
+//            플래티넘이 아닌 스위칭 아바타의 엠블렘은 삭제
+            if (arrNode.isArray() && av.path("slotName") != null &&
+                    (av.path("slotName").asText().equals("상의 아바타") ||
+                    av.path("slotName").asText().equals("하의 아바타"))) {
                 ArrayNode arrayNode = (ArrayNode) arrNode;
                 for (int i = arrayNode.size() - 1; i >= 0; i--) {
                     if (!"플래티넘".equals(arrayNode.get(i).path("slotColor").asText())) {

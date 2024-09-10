@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class ServiceLogging {
 
-    @Around("execution(* org.gbsb.duncool.service.DuncoolServiceImpl.*(..))")
+    @Around("execution(* org.gbsb.duncool.service.*.*(..))")
     public Object serviceExecutionTimeInfo(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();  // 메소드 실행 전 시간 기록
 
