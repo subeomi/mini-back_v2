@@ -26,9 +26,6 @@ public interface InfoMapper {
     @Select("select * from char_info where characterId = #{characterId}")
     CharInfoDTO getOneInfo(String CharacterId);
 
-    @Select("select characterId from char_info where characterId = #{characterId}")
-    String getOneCharacterId(String CharacterId);
-
     @Insert("INSERT INTO char_data (characterId, data) VALUES (#{characterId}, #{data})")
     int insertData(CharAllDTO dto);
 

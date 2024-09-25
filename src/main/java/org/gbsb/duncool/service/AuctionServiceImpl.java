@@ -12,6 +12,7 @@ import org.gbsb.duncool.dto.ItemInfoDTO;
 import org.gbsb.duncool.dto.PriceInfoDTO;
 import org.gbsb.duncool.mappers.EnchantMapper;
 import org.gbsb.duncool.mappers.ItemMapper;
+import org.gbsb.duncool.service.data.ItemDataService;
 import org.gbsb.duncool.util.SingletonManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,8 @@ public class AuctionServiceImpl implements AuctionService {
     private final ItemService itemService;
     private final EnchantService enchantService;
     private final ItemMapper itemMapper;
+
+    private final ItemDataService itemDataService;
     private final RestTemplate restTemplate;
 
     private final ObjectMapper om = SingletonManager.getObjectMapper();
@@ -342,7 +345,7 @@ public class AuctionServiceImpl implements AuctionService {
                         .itemPrice(price.path("itemPrice").asText())
                         .itemId(price.path("itemId").asText())
                         .itemName(price.path("itemName").asText()).build();
-                itemMapper.insertPriceInfo(dto);
+                itemDataService.insertPriceInfoData(dto);
             }
 
 //            log.info("insert price dto: " + dto);
@@ -401,7 +404,7 @@ public class AuctionServiceImpl implements AuctionService {
                         .itemPrice(price.path("itemPrice").asText())
                         .itemId(price.path("itemId").asText())
                         .itemName(price.path("itemName").asText()).build();
-                itemMapper.insertPriceInfo(dto);
+                itemDataService.insertPriceInfoData(dto);
             }
 
 //            log.info("insert price dto: " + dto);

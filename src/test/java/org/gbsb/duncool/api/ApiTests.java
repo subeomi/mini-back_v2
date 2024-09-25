@@ -250,7 +250,7 @@ public class ApiTests {
                 .build();
 
         log.info(dto);
-        mapper.insertCharInfo(dto);
+//        mapper.insertCharInfo(dto);
 
 //        data.remove("buff");
 //        data.remove("status");

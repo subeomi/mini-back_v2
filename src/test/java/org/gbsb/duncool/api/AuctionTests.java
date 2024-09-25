@@ -11,6 +11,7 @@ import org.gbsb.duncool.mappers.EnchantMapper;
 import org.gbsb.duncool.mappers.ItemMapper;
 import org.gbsb.duncool.service.EnchantService;
 import org.gbsb.duncool.service.ItemService;
+import org.gbsb.duncool.service.data.ItemDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,9 @@ public class AuctionTests {
     private EnchantService enchantService;
     @Autowired
     private ItemMapper itemMapper;
+
+    @Autowired
+    private ItemDataService itemDataService;
 
     @Autowired
     private EnchantMapper enchantMapper;
@@ -146,7 +150,7 @@ public class AuctionTests {
                             .itemPrice(item.path("unitPrice").asLong())
                             .tradeDate(item.path("soldDate").asText())
                             .build();
-                    itemMapper.insertTradeHistory(trade);
+                    itemDataService.insertTradeHistoryData(trade);
                 }
             }
         }
@@ -183,7 +187,7 @@ public class AuctionTests {
                                 .tradeDate(item.path("soldDate").asText())
                                 .build();
 
-                        itemMapper.insertTradeHistory(tradeDTO);
+                        itemDataService.insertTradeHistoryData(tradeDTO);
                     }
                 }
             }
@@ -199,7 +203,7 @@ public class AuctionTests {
                         .tradeDate(item.path("soldDate").asText())
                         .build();
 
-                itemMapper.insertTradeHistory(tradeDTO);
+                itemDataService.insertTradeHistoryData(tradeDTO);
             }
         }
 

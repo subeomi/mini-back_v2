@@ -10,6 +10,7 @@ import org.gbsb.duncool.dto.CharAllDTO;
 import org.gbsb.duncool.dto.CharInfoAdvenDTO;
 import org.gbsb.duncool.dto.CharInfoDTO;
 import org.gbsb.duncool.mappers.InfoMapper;
+import org.gbsb.duncool.service.data.InfoDataService;
 import org.gbsb.duncool.util.SingletonManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,8 @@ public class DuncoolServiceImpl implements DuncoolService {
     private final AuctionService auctionService;
 
     private final InfoMapper mapper;
+
+    private final InfoDataService infoDataService;
 
     private final ObjectMapper om = SingletonManager.getObjectMapper();
 
@@ -241,23 +244,7 @@ public class DuncoolServiceImpl implements DuncoolService {
 
         log.info("setDTO: " + setDto);
 
-        if (dto == null) {
-            log.info("dto null");
-            mapper.insertCharInfo(setDto);
-            mapper.insertData(setDto);
-            mapper.insertEquip(setDto);
-            mapper.insertAvatar(setDto);
-            mapper.insertCreature(setDto);
-            mapper.insertSwitching(setDto);
-        } else {
-            log.info("dto update");
-            mapper.updateCharInfo(setDto);
-            mapper.updateData(setDto);
-            mapper.updateEquip(setDto);
-            mapper.updateAvatar(setDto);
-            mapper.updateCreature(setDto);
-            mapper.updateSwitching(setDto);
-        }
+        infoDataService.saveCharInfoData(dto, setDto);
 
         data = getAltFromData(data);
 
@@ -268,11 +255,6 @@ public class DuncoolServiceImpl implements DuncoolService {
         result.set("switching", switching);
 
         return result;
-    }
-
-    private ObjectNode getOneInfoFromDB(String serverId, String characterId) {
-
-        return null;
     }
 
     @Override

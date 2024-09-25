@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.gbsb.duncool.dto.EnchantDTO;
 import org.gbsb.duncool.dto.ItemInfoDTO;
 import org.gbsb.duncool.mappers.EnchantMapper;
+import org.gbsb.duncool.service.data.EnchantDataService;
 import org.gbsb.duncool.util.SingletonManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class EnchantServiceImpl implements EnchantService{
 
     private final ItemService itemService;
     private final EnchantMapper enchantMapper;
+    private final EnchantDataService enchantDataService;
     private final RestTemplate restTemplate;
 
     private final ObjectMapper om = SingletonManager.getObjectMapper();
@@ -147,7 +149,7 @@ public class EnchantServiceImpl implements EnchantService{
                     .enchant(enc.toString())
                     .build();
 
-            enchantMapper.insertEnchantInfo(dto);
+            enchantDataService.insertEnchantInfoData(dto);
         }
 
         for (JsonNode slot : slots) {
@@ -158,7 +160,7 @@ public class EnchantServiceImpl implements EnchantService{
                     .itemId(itemId)
                     .build();
 
-            enchantMapper.insertEnchantSlot(dto);
+            enchantDataService.insertEnchantSlotData(dto);
         }
     }
     
@@ -212,7 +214,7 @@ public class EnchantServiceImpl implements EnchantService{
                         .enchant(enc.toString())
                         .build();
 
-                enchantMapper.insertEnchantInfo(dto);
+                enchantDataService.insertEnchantInfoData(dto);
             }
 
             for (JsonNode slot : slots) {
@@ -223,7 +225,7 @@ public class EnchantServiceImpl implements EnchantService{
                         .itemId(itemId)
                         .build();
 
-                enchantMapper.insertEnchantSlot(dto);
+                enchantDataService.insertEnchantSlotData(dto);
             }
         }
     }

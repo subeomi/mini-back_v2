@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.gbsb.duncool.dto.ItemInfoDTO;
 import org.gbsb.duncool.dto.ItemReinforceDTO;
 import org.gbsb.duncool.mappers.ItemMapper;
+import org.gbsb.duncool.service.data.ItemDataService;
 import org.gbsb.duncool.util.SingletonManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,8 @@ public class ItemServiceImpl implements ItemService {
     private String apiUrl;
     
     private final ItemMapper itemMapper;
+
+    private final ItemDataService itemDataService;
     private final RestTemplate restTemplate;
     private final ObjectMapper om = SingletonManager.getObjectMapper();
 
@@ -58,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
             dto.setItemFame(fame);
 //            log.info(dto);
 
-            itemMapper.insertItemInfo(dto);
+            itemDataService.insertItemInfoData(dto);
         }
 //        log.info("item: " + dto);
 
@@ -106,7 +109,7 @@ public class ItemServiceImpl implements ItemService {
                         .itemId(itemId)
                         .reinforceSkill(reinforce.toString())
                         .build();
-                itemMapper.insertReinforceSkill(dto);
+                itemDataService.insertReinforceSkillData(dto);
             }
         }
 

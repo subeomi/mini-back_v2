@@ -10,6 +10,7 @@ import org.gbsb.duncool.mappers.EnchantMapper;
 import org.gbsb.duncool.service.AuctionService;
 import org.gbsb.duncool.service.EnchantService;
 import org.gbsb.duncool.service.ItemService;
+import org.gbsb.duncool.service.data.EnchantDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,8 @@ public class EnchantTests {
     private EnchantMapper enchantMapper;
     @Autowired
     private EnchantService enchantService;
+    @Autowired
+    private EnchantDataService enchantDataService;
 
 
     @Test
@@ -233,15 +236,14 @@ public class EnchantTests {
                 .enchant(칭호마부옵션)
                 .build();
 
-        enchantMapper.insertEnchantInfo(dto1);
+        enchantDataService.insertEnchantInfoData(dto1);
 
         EnchantDTO dto2 = EnchantDTO.builder()
                 .slot("칭호")
                 .itemId(itemId)
                 .build();
 
-        enchantMapper.insertEnchantSlot(dto2);
-
+        enchantDataService.insertEnchantSlotData(dto2);
     }
 
 

@@ -13,6 +13,7 @@ import org.gbsb.duncool.mappers.EnchantMapper;
 import org.gbsb.duncool.mappers.ItemMapper;
 import org.gbsb.duncool.service.EnchantService;
 import org.gbsb.duncool.service.ItemService;
+import org.gbsb.duncool.service.data.ItemDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +35,11 @@ public class ItemTests {
 
     @Autowired
     private ItemService itemService;
-
     @Autowired
     private ItemMapper itemMapper;
+
+    @Autowired
+    private ItemDataService itemDataService;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -110,7 +113,7 @@ public class ItemTests {
                     .itemId(itemId)
                     .reinforceSkill(reinforce.toString())
                     .build();
-            itemMapper.insertReinforceSkill(dto);
+            itemDataService.insertReinforceSkillData(dto);
         }
 
         log.info(reinforce);
